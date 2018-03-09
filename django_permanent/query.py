@@ -100,7 +100,6 @@ class BasePermanentQuerySet(QuerySet):
         for obj in objs:
             post_restore.send(sender=obj.__class__, instance=obj)
         return res        
-        return self.get_unpatched().update(**{settings.FIELD: settings.FIELD_DEFAULT})
 
     def values(self, *fields):
         if django.VERSION < (1, 9, 0):
