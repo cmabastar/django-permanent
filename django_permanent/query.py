@@ -91,6 +91,15 @@ class BasePermanentQuerySet(QuerySet):
     delete.alters_data = True
 
     def restore(self):
+        objs = [obj for obj in self]
+        for obj in objs:
+            pre_restore.send(sender=obj.__class__, instance=obj)
+
+        res = self.get_unpatched().update(**{settings.FIELD: settings.FIELD_DEFAULT})
+
+        for obj in objs:
+            post_restore.send(sender=obj.__class__, instance=obj)
+        return res        
         return self.get_unpatched().update(**{settings.FIELD: settings.FIELD_DEFAULT})
 
     def values(self, *fields):
